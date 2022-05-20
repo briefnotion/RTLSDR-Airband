@@ -72,6 +72,11 @@
 #include "rtl_airband.h"
 #include "squelch.h"
 
+// ----------------  briefnotion
+#include "rasapi.h"
+#include "airbandapi.h"
+// ----------------  briefnotion
+
 #ifdef WITH_PROFILING
 #include "gperftools/profiler.h"
 #endif
@@ -319,6 +324,18 @@ int next_device(demod_params_t *params, int current) {
 }
 
 void *demodulate(void *params) {
+  
+// ----------------  briefnotion
+FILE_WATCH api_file;
+API_CHANNEL api_squelch;
+
+
+
+
+
+// ----------------  briefnotion
+
+
 	assert(params != NULL);
 	demod_params_t *demod_params = (demod_params_t *) params;
 
@@ -677,6 +694,15 @@ void *demodulate(void *params) {
 				if (channel->axcindicate != NO_SIGNAL) {
 					channel->freqlist[channel->freq_idx].active_counter++;
 				}
+
+        // ----------------  briefnotion
+        api_squelch.put(fparms);
+        
+
+
+
+
+        // ----------------  briefnotion
 			}
 			if (dev->waveavail == 1) {
 				debug_print("devices[%d]: output channel overrun\n", device_num);

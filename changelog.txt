@@ -1,0 +1,5 @@
+V 0.01A_220519
+  - Brought in my rasapi.h library from RASFled.
+  - Created an airbandapi.h library.
+  - Put in a few lines of code, compiled, and ran, to see how the 
+      program would behave.
