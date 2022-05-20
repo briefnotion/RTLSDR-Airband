@@ -73,6 +73,7 @@
 #include "squelch.h"
 
 // ----------------  briefnotion
+#include "fled_time.h"
 #include "rasapi.h"
 #include "airbandapi.h"
 // ----------------  briefnotion
@@ -325,15 +326,11 @@ int next_device(demod_params_t *params, int current) {
 
 void *demodulate(void *params) {
   
-// ----------------  briefnotion
-FILE_WATCH api_file;
+// ----------------  brief  ----------------
 API_CHANNEL api_squelch;
 
 
-
-
-
-// ----------------  briefnotion
+// ----------------  brief  ----------------
 
 
 	assert(params != NULL);

@@ -1,3 +1,10 @@
+V 0.02A_220520
+  - Included fled_time.h
+  - Introducing libboost-all-dev-1.74.0.3+b1 c++ libraries. 
+  - Modified rasapi and added functions.
+  - Started working on framework of airbandapi.h
+  - Modified CMakeLists.txt to accept boost library for compile.
+
 V 0.01A_220519
   - Brought in my rasapi.h library from RASFled.
   - Created an airbandapi.h library.

@@ -51,6 +51,11 @@ find_library(LIBPTHREAD pthread REQUIRED)
 
 find_package(PkgConfig REQUIRED)
 
+# ----------------  brief  ----------------
+find_package(Boost 1.74.0 COMPONENTS filesystem)
+INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
+# ----------------  brief  ----------------
+
 pkg_check_modules(CONFIG REQUIRED libconfig++)
 list(APPEND rtl_airband_extra_libs ${CONFIG_LIBRARIES})
 list(APPEND rtl_airband_include_dirs ${CONFIG_INCLUDE_DIRS})
@@ -291,6 +296,9 @@ target_link_libraries (rtl_airband
 	m
 	pthread
 	${rtl_airband_extra_libs}
+  # ----------------  brief  ----------------
+  ${Boost_LIBRARIES}
+  # ----------------  brief  ----------------
 )
 
 install(TARGETS rtl_airband

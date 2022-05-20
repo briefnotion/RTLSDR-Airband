@@ -9,7 +9,7 @@
 // *                                                      (c) 2856 - 2858 Core Dynamics
 // ***************************************************************************************
 // *
-// *  PROJECTID: gi6$b*E>*q%;    Revision: 00000000.01A
+// *  PROJECTID: gi6$b*E>*q%;    Revision: 00000000.02A
 // *  TEST CODE:                 QACODE: A565              CENSORCODE: EQK6}Lc`:Eg>
 // *
 // ***************************************************************************************
@@ -37,6 +37,12 @@ class FILE_WATCH
   long  FILE_SIZE   = 0;
   bool  LINE_AVAIL  = false;
 
+  // Passive or Active (not passive) will determine whether or not the file 
+  //  is closed after every iteration or call to the get_next_line.
+  //  Important for when the same file is being watched by multiple programs.
+  //  Passive default is false.
+  bool ACTIVE = true;
+
   // Next cursor position of Read_Line
   streampos POSITION;
 
@@ -44,7 +50,7 @@ class FILE_WATCH
   // Simple close the stream then reopen, effectivly clearing stram errors.
   {
     close();
-    open(FILENAME);
+    open(FILENAME, ACTIVE);
   }
 
   void reset()
@@ -56,7 +62,7 @@ class FILE_WATCH
     close();
     LINE_AVAIL = false;
     POSITION = 0;
-    open(FILENAME);
+    open(FILENAME, ACTIVE);
   }
 
   long get_file_size()
@@ -97,21 +103,43 @@ class FILE_WATCH
     }
   }
 
-  public:
-
-  bool open(string Filename)
-  // Open the file for watching.
+  void passive_active_file_open(bool Active)
   {
-    FILENAME = Filename;
-    LOG_FILE.open(FILENAME, ios::in);
-    return true;
+    if (Active == true)
+    {
+      LOG_FILE.open(FILENAME, ios::in);
+    }
+  }
+  
+  void passive_active_file_close(bool Active)
+  {
+    if (Active == true)
+    {
+      LOG_FILE.close();
+    }
   }
 
-  bool close()
+  public:
+
+  void open(string Filename, bool Active)
+  // Open the file for watching in passive or active state.
+  {
+    FILENAME = Filename;
+    ACTIVE = Active;
+    passive_active_file_open(ACTIVE);
+  }
+
+  void open(string Filename)
+  // Open the file for watching in active state.
+  {
+    bool passive = false;
+    open(Filename, passive);
+  }
+
+  void close()
   // Close the file.
   {
-    LOG_FILE.close();
-    return true;
+    passive_active_file_close(ACTIVE);
   }
 
   bool line_avail()
@@ -125,6 +153,20 @@ class FILE_WATCH
     return LINE_AVAIL;
   }
 
+  bool size_changed()
+  // Return true if file size change detected. 
+  {
+    if (file_changed() == true)
+    {
+      LINE_AVAIL = true;
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
   string get_next_line()
   // Returns the newly added line of the watch file.
   {
@@ -136,6 +178,9 @@ class FILE_WATCH
     {
       // New Position var for comparison.
       streampos new_position;
+
+      // Open the file if it isnt open because in passive state
+      passive_active_file_open(!ACTIVE);
 
       // Insure cursor position is at correct spot.
       LOG_FILE.seekg(POSITION);
@@ -178,9 +223,18 @@ class FILE_WATCH
         }
       }
     }
+
+    // Close the file if it isnt closed because in passive state
+    passive_active_file_close(!ACTIVE);
     
     // Return the read line.
     return str_read_line;
+  }
+
+  string get_first_line()
+  {
+    POSITION = 0;
+    return get_next_line();
   }
 };
 
