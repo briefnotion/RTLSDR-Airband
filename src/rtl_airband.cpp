@@ -75,7 +75,7 @@
 // ----------------  briefnotion
 #include "fled_time.h"
 #include "rasapi.h"
-#include "airbandapi.h"
+#include "api.h"
 // ----------------  briefnotion
 
 #ifdef WITH_PROFILING
@@ -693,8 +693,8 @@ API_CHANNEL api_squelch;
 				}
 
         // ----------------  briefnotion
-        api_squelch.put(fparms);
-        
+        api_squelch.gather(fparms);
+        api_squelch.send_and_receive();
 
 
 

@@ -1,3 +1,10 @@
+V 0.03A_220521
+  - Split and renamed a few libraries.  I will try to make the api.h as
+      as portable as possible because the same api base will be needed 
+      in RasFLED.  
+  - I still think my time could be better spent building a prostetic arm,  
+      but, I was given a radio, not motors and relays. 
+
 V 0.02A_220520
   - Included fled_time.h
   - Introducing libboost-all-dev-1.74.0.3+b1 c++ libraries. 
