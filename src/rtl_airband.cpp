@@ -73,9 +73,7 @@
 #include "squelch.h"
 
 // ----------------  briefnotion
-#include "fled_time.h"
-#include "rasapi.h"
-#include "api.h"
+#include "api_shared_memory.h"
 // ----------------  briefnotion
 
 #ifdef WITH_PROFILING
@@ -327,7 +325,13 @@ int next_device(demod_params_t *params, int current) {
 void *demodulate(void *params) {
   
 // ----------------  brief  ----------------
-API_CHANNEL api_squelch;
+// Prepare Shared Memory Space.
+shared_memory_object shdmem{open_or_create, "Airband", read_write};
+shdmem.truncate(1024);
+mapped_region region{shdmem, read_write};
+
+// 
+API_CHANNEL_MEM api_squelch;
 
 
 // ----------------  brief  ----------------
@@ -693,11 +697,8 @@ API_CHANNEL api_squelch;
 				}
 
         // ----------------  briefnotion
-        api_squelch.gather(fparms);
-        api_squelch.send_and_receive();
-
-
-
+        // Write channel info to shared memory.
+        api_squelch.rtl_airband_send(region, fparms);
 
         // ----------------  briefnotion
 			}

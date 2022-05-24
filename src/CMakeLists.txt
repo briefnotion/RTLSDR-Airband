@@ -48,11 +48,14 @@ set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES_ORIG})
 find_library(LIBM m REQUIRED)
 find_library(LIBDL dl REQUIRED)
 find_library(LIBPTHREAD pthread REQUIRED)
+# ----------------  brief  ----------------
+find_library(LIBRT rt)
+# ----------------  brief  ----------------
 
 find_package(PkgConfig REQUIRED)
 
 # ----------------  brief  ----------------
-find_package(Boost 1.74.0 COMPONENTS filesystem)
+find_package(Boost 1.74.0 COMPONENTS interprocess)
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 # ----------------  brief  ----------------
 
@@ -297,6 +300,7 @@ target_link_libraries (rtl_airband
 	pthread
 	${rtl_airband_extra_libs}
   # ----------------  brief  ----------------
+  ${LIBRT}
   ${Boost_LIBRARIES}
   # ----------------  brief  ----------------
 )
