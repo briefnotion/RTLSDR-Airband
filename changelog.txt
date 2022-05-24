@@ -1,3 +1,20 @@
+V 0.04A_220522
+  - Spent the better part of a day coding an api via file transfer.
+  - Spent the better part of the next day getting a basic understanding 
+      of shared memory regions.
+  - Spent the better part of the next day trying to initialize shared 
+      memory region variables in the header portion of a class variable. 
+      I was unsucessful and the way these functions are called is new 
+      to me. 
+  - The API to RasFLED is working and sending, with scan option only, 
+      Frequency, Signal Level, Noise Level, Signal Outside of Filter, 
+      and, Channel open status.
+  - the boost library 1.74.0 , from boost.org is and will from now on, 
+      be referenced.  I was avoiding pulling in, or including in any way,  
+      more libraries to avoid the problems associated to required dependancies. 
+      I've decided to reference boost libraries because of the programmer 
+      community's excelent reviews, and the variety of useful functions provided. 
+  
 V 0.03A_220521
   - Split and renamed a few libraries.  I will try to make the api.h as
       as portable as possible because the same api base will be needed 
