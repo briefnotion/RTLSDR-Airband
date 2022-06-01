@@ -9,7 +9,7 @@
 // *                                                      (c) 2856 - 2858 Core Dynamics
 // ***************************************************************************************
 // *
-// *  PROJECTID: gi6$b*E>*q%;    Revision: 00000000.03A
+// *  PROJECTID: gi6$b*E>*q%;    Revision: 00000000.04A
 // *  TEST CODE:                 QACODE: A565              CENSORCODE: EQK6}Lc`:Eg>
 // *
 // ***************************************************************************************
@@ -58,6 +58,33 @@ class API_CHANNEL_MEM
     FIRST_RUN = false;    
   }
 
+  void int_set_if_changed(int &Store, int &Receive, bool &Changed)
+  {
+    if(Store != Receive)
+    {
+      Store = Receive;
+      Changed = true;
+    }
+  }
+
+  void float_set_if_changed(float &Store, float &Receive, bool &Changed)
+  {
+    if(Store != Receive)
+    {
+      Store = Receive;
+      Changed = true;
+    }
+  }
+
+  void bool_set_if_changed(bool &Store, bool &Receive, bool &Changed)
+  {
+    if(Store != Receive)
+    {
+      Store = Receive;
+      Changed = true;
+    }
+  }
+
   public:
 
   // Start or Stop the API.
@@ -65,7 +92,7 @@ class API_CHANNEL_MEM
 
   // Copy information to shared variables
 
-
+  
   // rtl_airband Routines
   void rtl_airband_send(mapped_region &region, freq_t *fparms)
   {
@@ -87,10 +114,13 @@ class API_CHANNEL_MEM
         (*SQUELCH).HOLD = true;
 
         (*SQUELCH).FREQUENCY = fparms->frequency;
+        //(*SQUELCH).LABEL = fparms->label;
         (*SQUELCH).NOISE_LEVEL = level_to_dBFS(fparms->squelch.noise_level());
         (*SQUELCH).SIGNAL_LEVEL = level_to_dBFS(fparms->squelch.signal_level());
         (*SQUELCH).SIGNAL_OUTSIDE_FILTER = fparms->squelch.signal_outside_filter();
         (*SQUELCH).IS_OPEN = fparms->squelch.is_open();
+
+        (*SQUELCH).CHANGED = true;
 
         (*SQUELCH).HOLD = false;
       }
@@ -119,11 +149,13 @@ class API_CHANNEL_MEM
       {
         (*SQUELCH).HOLD = true;
 
-        API_Squelch.FREQUENCY = (*SQUELCH).FREQUENCY;
-        API_Squelch.NOISE_LEVEL = (*SQUELCH).NOISE_LEVEL;
-        API_Squelch.SIGNAL_LEVEL = (*SQUELCH).SIGNAL_LEVEL;
-        API_Squelch.SIGNAL_OUTSIDE_FILTER = (*SQUELCH).SIGNAL_OUTSIDE_FILTER;
-        API_Squelch.EVERYTHING_IS_OK = (*SQUELCH).EVERYTHING_IS_OK;
+        int_set_if_changed(API_Squelch.FREQUENCY, (*SQUELCH).FREQUENCY, API_Squelch.CHANGED);
+        float_set_if_changed(API_Squelch.NOISE_LEVEL, (*SQUELCH).NOISE_LEVEL, API_Squelch.CHANGED);
+        float_set_if_changed(API_Squelch.SIGNAL_LEVEL, (*SQUELCH).SIGNAL_LEVEL, API_Squelch.CHANGED);
+        bool_set_if_changed(API_Squelch.SIGNAL_OUTSIDE_FILTER, (*SQUELCH).SIGNAL_OUTSIDE_FILTER, API_Squelch.CHANGED);
+        bool_set_if_changed(API_Squelch.IS_OPEN, (*SQUELCH).IS_OPEN, API_Squelch.CHANGED);
+
+        (*SQUELCH).CHANGED = false;
 
         (*SQUELCH).HOLD = false;
       }

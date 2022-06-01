@@ -1,3 +1,6 @@
+V 0.05A_220531
+  - Some things changed.
+
 V 0.04A_220522
   - Spent the better part of a day coding an api via file transfer.
   - Spent the better part of the next day getting a basic understanding 
