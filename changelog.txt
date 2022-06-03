@@ -1,3 +1,18 @@
+V 0.06A_220602
+  - rtl_airband supports labels for each frequency in the .conf file.
+    The following line was added after the freqs = ... line.
+    
+    labels = ("CTAF","LAFAYETTE GROUND","UNICOM","LAFAYETTE APPROACH","LAFAYETTE DEPARTURE" );
+
+    My forked version of rtl_airband will now communicate and display the 
+    labels to RasFLED Radio Channel gadget.
+
+  - The corrosponding versions are:
+      RasFLED (V 0.84A_220602) <==> rtl_airband (V 0.06A_220602)
+      
+      RasFLED:      https://github.com/briefnotion/RasFLED
+      rtl_airband:  https://github.com/briefnotion/RTLSDR-Airband
+
 V 0.05A_220531
   - Some things changed.
 

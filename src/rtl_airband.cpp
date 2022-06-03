@@ -699,7 +699,7 @@ API_CHANNEL_MEM api_squelch;
         // ----------------  briefnotion
         // Write channel info to shared memory.
         api_squelch.rtl_airband_send(region, fparms);
-
+        //printf("%s",fparms->label);
         // ----------------  briefnotion
 			}
 			if (dev->waveavail == 1) {
