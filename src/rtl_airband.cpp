@@ -325,13 +325,16 @@ int next_device(demod_params_t *params, int current) {
 void *demodulate(void *params) {
   
 // ----------------  brief  ----------------
+
+
 // Prepare Shared Memory Space.
 shared_memory_object shdmem{open_or_create, "Airband", read_write};
 shdmem.truncate(1024);
-mapped_region region{shdmem, read_write};
+mapped_region region_scan{shdmem, read_write};
 
-// 
-API_CHANNEL_MEM api_squelch;
+// Tell the API a program has access.
+API_CHANNEL_MEM API_Channel;
+API_Channel.open(region_scan);
 
 
 // ----------------  brief  ----------------
@@ -697,9 +700,13 @@ API_CHANNEL_MEM api_squelch;
 				}
 
         // ----------------  briefnotion
+
+
         // Write channel info to shared memory.
-        api_squelch.rtl_airband_send(region, fparms);
-        //printf("%s",fparms->label);
+        API_Channel.rtl_airband_send(region_scan, fparms);
+        //printf(" API %d",API_Channel.get_binds(region_scan));
+                
+        
         // ----------------  briefnotion
 			}
 			if (dev->waveavail == 1) {
@@ -725,6 +732,24 @@ API_CHANNEL_MEM api_squelch;
 		dev->input->bufs = (dev->input->bufs + bps * FFT_BATCH) % dev->input->buf_size;
 		device_num = next_device(demod_params, device_num);
 	}
+
+  // ----------------  brief  ----------------
+
+
+  // Remove Shared Memory (if not active)
+  API_Channel.close(region_scan);
+  if (API_Channel.get_binds(region_scan) == 0)
+  {
+    printf("Closing API.");
+    boost::interprocess::shared_memory_object::remove("Airband");
+  }
+  else
+  {
+    printf("Leaving API.");
+  }
+
+
+  // ----------------  brief  ----------------
 }
 
 void usage() {
