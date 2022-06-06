@@ -332,9 +332,7 @@ shared_memory_object shdmem{open_or_create, "Airband", read_write};
 shdmem.truncate(1024);
 mapped_region region_scan{shdmem, read_write};
 
-// Tell the API a program has access.
 API_CHANNEL_MEM API_Channel;
-API_Channel.open(region_scan);
 
 
 // ----------------  brief  ----------------
@@ -703,7 +701,7 @@ API_Channel.open(region_scan);
 
 
         // Write channel info to shared memory.
-        API_Channel.rtl_airband_send(region_scan, fparms);
+        API_Channel.rtl_airband_send_squelch(region_scan, fparms);
         //printf(" API %d",API_Channel.get_binds(region_scan));
                 
         
@@ -860,6 +858,23 @@ int main(int argc, char* argv[]) {
 		exit(1);
 	}
 #endif
+
+
+  // ----------------  brief  ----------------
+
+
+  // Prepare Shared Memory Space.
+  shared_memory_object shdmem{open_or_create, "Airband", read_write};
+  shdmem.truncate(1024);
+  mapped_region region_scan{shdmem, read_write};
+
+  // Tell the API a program has access.
+  API_CHANNEL_MEM API_Channel;
+  API_Channel.open(region_scan);
+
+
+  // ----------------  brief  ----------------
+
 
 	// read config
 	try {

@@ -86,7 +86,25 @@ static int mirisdr_find_device_by_serial(char const * const s) {
 }
 
 int mirisdr_init(input_t * const input) {
-	mirisdr_dev_data_t *dev_data = (mirisdr_dev_data_t *)input->dev_data;
+	
+  
+    // ----------------  brief  ----------------
+
+
+  // Prepare Shared Memory Space.
+  shared_memory_object shdmem{open_or_create, "Airband", read_write};
+  shdmem.truncate(1024);
+  mapped_region region_scan{shdmem, read_write};
+
+  // Tell the API a program has access.
+  API_CHANNEL_MEM API_Channel;
+  API_Channel.open(region_scan);
+
+
+  // ----------------  brief  ----------------
+  
+  
+  mirisdr_dev_data_t *dev_data = (mirisdr_dev_data_t *)input->dev_data;
 	if(dev_data->serial != NULL) {
 		dev_data->index = mirisdr_find_device_by_serial(dev_data->serial);
 		if(dev_data->index < 0) {

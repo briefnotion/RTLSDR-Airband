@@ -33,6 +33,10 @@
 #include "input-rtlsdr.h"	// rtlsdr_dev_data_t
 #include "rtl_airband.h"	// do_exit, fft_size, debug_print, XCALLOC, error()
 
+// ----------------  briefnotion
+#include "api_shared_memory.h"
+// ----------------  briefnotion
+
 using namespace std;
 
 static void rtlsdr_callback(unsigned char *buf, uint32_t len, void *ctx) {
@@ -146,6 +150,24 @@ int rtlsdr_init(input_t * const input) {
 	} else {
 		log(LOG_INFO, "Device #%d: gain set to %0.2f dB\n", dev_data->index,
 			(float)rtlsdr_get_tuner_gain(rtl) / 10.f);
+
+
+    // ----------------  brief  ----------------
+
+
+    // Prepare Shared Memory Space.
+    shared_memory_object shdmem{open_or_create, "Airband", read_write};
+    shdmem.truncate(1024);
+    mapped_region region_scan{shdmem, read_write};
+
+    API_CHANNEL_MEM API_Channel;
+
+    API_Channel.rtl_airband_send_device(region_scan, dev_data->index, (float)rtlsdr_get_tuner_gain(rtl) / 10);
+
+
+    // ----------------  brief  ----------------      
+
+
 	}
 
 	r = rtlsdr_set_agc_mode(rtl, 0);
