@@ -334,6 +334,8 @@ mapped_region region_scan{shdmem, read_write};
 
 API_CHANNEL_MEM API_Channel;
 
+API_SQUELCH_SOURCE API_Squelch;
+
 
 // ----------------  brief  ----------------
 
@@ -700,13 +702,29 @@ API_CHANNEL_MEM API_Channel;
         // ----------------  briefnotion
 
 
-        // Write channel info to shared memory.
-        API_Channel.rtl_airband_send_squelch(region_scan, fparms);
-        //printf(" API %d",API_Channel.get_binds(region_scan));
-                
+        // Get Squelch Freqency info.
+        API_Channel.rtl_airband_get_squelch(API_Squelch, fparms);
+
+        
         
         // ----------------  briefnotion
+
+
 			}
+
+
+      // ----------------  briefnotion
+
+
+      // Send Squelch Freqency info.
+      int dummy_command = 0;
+      API_Channel.rtl_airband_send_squelch(region_scan, API_Squelch, dummy_command);
+
+
+      // ----------------  briefnotion
+
+
+      
 			if (dev->waveavail == 1) {
 				debug_print("devices[%d]: output channel overrun\n", device_num);
 				dev->output_overrun_count++;

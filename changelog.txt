@@ -1,3 +1,6 @@
+V 0.08A_220606
+  - Improving API Communication.
+
 V 0.07A_220605
   - Changed the way the api works again in an attept to find clean 
       communication.
