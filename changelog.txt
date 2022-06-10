@@ -1,3 +1,10 @@
+V 0.09A_220609
+  - Improving API Communication.
+  - Receiving an "OFF" command, through the API, from RasFLED is 
+      now successful in shutting down the radio without calling a system command.
+
+  - RasFLED (V 0.89A_220609) <==> rtl_airband (V 0.09A_220609)
+
 V 0.08A_220606
   - Improving API Communication.
 

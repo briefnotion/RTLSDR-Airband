@@ -336,6 +336,9 @@ API_CHANNEL_MEM API_Channel;
 
 API_SQUELCH_SOURCE API_Squelch;
 
+int API_Command_Received = 0;
+int API_Command_To_Send = 0;
+
 
 // ----------------  brief  ----------------
 
@@ -716,9 +719,26 @@ API_SQUELCH_SOURCE API_Squelch;
       // ----------------  briefnotion
 
 
-      // Send Squelch Freqency info.
-      int dummy_command = 0;
-      API_Channel.rtl_airband_send_squelch(region_scan, API_Squelch, dummy_command);
+      // Send Squelch Freqency info.rtl_airband_send_squelch
+      API_Command_Received = API_Channel.rtl_airband_send_squelch(region_scan, API_Squelch, API_Command_To_Send);
+      
+      if (API_Command_Received == -1)
+      {
+          // Remove Shared Memory (if not active)
+        API_Channel.close(region_scan);
+        if (API_Channel.get_binds(region_scan) == 0)
+        {
+          printf("Closing API.\n");
+          boost::interprocess::shared_memory_object::remove("Airband");
+        }
+        else
+        {
+          printf("Leaving API.\n");
+        }
+
+        // Original Exit Indicator.
+        do_exit = 1;
+      }
 
 
       // ----------------  briefnotion
@@ -752,17 +772,7 @@ API_SQUELCH_SOURCE API_Squelch;
   // ----------------  brief  ----------------
 
 
-  // Remove Shared Memory (if not active)
-  API_Channel.close(region_scan);
-  if (API_Channel.get_binds(region_scan) == 0)
-  {
-    printf("Closing API.");
-    boost::interprocess::shared_memory_object::remove("Airband");
-  }
-  else
-  {
-    printf("Leaving API.");
-  }
+
 
 
   // ----------------  brief  ----------------
