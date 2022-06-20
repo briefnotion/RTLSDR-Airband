@@ -74,6 +74,7 @@
 
 // ----------------  briefnotion
 #include "api_shared_memory.h"
+#include "brief_control.h"
 // ----------------  briefnotion
 
 #ifdef WITH_PROFILING
@@ -324,23 +325,25 @@ int next_device(demod_params_t *params, int current) {
 
 void *demodulate(void *params) {
   
-// ----------------  brief  ----------------
+  // ----------------  brief  ----------------
 
 
-// Prepare Shared Memory Space.
-shared_memory_object shdmem{open_or_create, "Airband", read_write};
-shdmem.truncate(1024);
-mapped_region region_scan{shdmem, read_write};
+  // Prepare Shared Memory Space.
+  shared_memory_object shdmem{open_or_create, "Airband", read_write};
+  shdmem.truncate(1024);
+  mapped_region region_scan{shdmem, read_write};
 
-API_CHANNEL_MEM API_Channel;
+  API_CHANNEL_MEM API_Channel;
 
-API_SQUELCH_SOURCE API_Squelch;
+  API_SQUELCH_SOURCE API_Squelch;
 
-int API_Command_Received = 0;
-int API_Command_To_Send = 0;
+  int API_Command_Received = 0;
+  int API_Command_To_Send = 0;
+
+  CONTROL Frequency_Control;
 
 
-// ----------------  brief  ----------------
+  // ----------------  brief  ----------------
 
 
 	assert(params != NULL);
@@ -558,6 +561,59 @@ int API_Command_To_Send = 0;
 
 		if (dev->waveend >= WAVE_BATCH + AGC_EXTRA) {
 			for (int i = 0; i < dev->channel_count; i++) {
+
+        
+        // ----------------  briefnotion
+
+
+          channel_t* brief_channel = dev->channels + i;
+          freq_t *brief_fparms = brief_channel->freqlist + brief_channel->freq_idx;
+
+          int control = Frequency_Control.get_control((int)round(brief_fparms->frequency / 1000.0));
+
+          if (control != 0)
+          {
+            bool stop_while = false;
+            int freq_start = (int)round(brief_fparms->frequency / 1000.0);
+
+            while (stop_while == false)
+            {
+              if (control == 0)
+              {
+                stop_while = true;
+              }
+              else
+              {
+                if (control == 2 && Frequency_Control.get_hold_frequency() == (int)round(brief_fparms->frequency / 1000.0))
+                {
+                  stop_while = true;
+                }
+                else
+                {
+                  brief_channel->freq_idx = brief_channel->freq_idx +1;
+                  if (brief_channel->freq_idx >= brief_channel->freq_count)
+                  {
+                    brief_channel->freq_idx = 0;
+                  }
+
+                  brief_channel = dev->channels + i;
+                  brief_fparms = brief_channel->freqlist + brief_channel->freq_idx;
+
+                  if (freq_start == (int)round(brief_fparms->frequency / 1000.0))
+                  {
+                    stop_while = true;
+                    do_exit = 1;
+                  }
+
+                  control = Frequency_Control.get_control((int)round(brief_fparms->frequency / 1000.0));
+                }
+              }
+            }
+          }
+
+        // ----------------  briefnotion
+
+
 				AFC afc(dev, i);
 				channel_t* channel = dev->channels + i;
 				freq_t *fparms = channel->freqlist + channel->freq_idx;
@@ -702,6 +758,7 @@ int API_Command_To_Send = 0;
 					channel->freqlist[channel->freq_idx].active_counter++;
 				}
 
+
         // ----------------  briefnotion
 
 
@@ -768,14 +825,6 @@ int API_Command_To_Send = 0;
 		dev->input->bufs = (dev->input->bufs + bps * FFT_BATCH) % dev->input->buf_size;
 		device_num = next_device(demod_params, device_num);
 	}
-
-  // ----------------  brief  ----------------
-
-
-
-
-
-  // ----------------  brief  ----------------
 }
 
 void usage() {

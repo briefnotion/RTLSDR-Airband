@@ -1,3 +1,6 @@
+V 0.10A_220609
+  - Started adding channel control routines.
+
 V 0.09A_220609
   - Improving API Communication.
   - Receiving an "OFF" command, through the API, from RasFLED is 
