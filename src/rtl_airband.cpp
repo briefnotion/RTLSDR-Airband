@@ -337,8 +337,8 @@ void *demodulate(void *params) {
 
   API_SQUELCH_SOURCE API_Squelch;
 
-  int API_Command_Received = 0;
-  int API_Command_To_Send = 0;
+  API_COMMAND API_Command_Received;
+  API_COMMAND API_Command_To_Send;
 
   CONTROL Frequency_Control;
 
@@ -777,24 +777,53 @@ void *demodulate(void *params) {
 
 
       // Send Squelch Freqency info.rtl_airband_send_squelch
-      API_Command_Received = API_Channel.rtl_airband_send_squelch(region_scan, API_Squelch, API_Command_To_Send);
+      API_Channel.rtl_airband_send_squelch(region_scan, API_Squelch, API_Command_To_Send, API_Command_Received);
       
-      if (API_Command_Received == -1)
+      // Show Command Received
+      if (API_Command_Received.CHANGED == true)
       {
-          // Remove Shared Memory (if not active)
-        API_Channel.close(region_scan);
-        if (API_Channel.get_binds(region_scan) == 0)
+        if (API_Command_Received.COMMAND != 0)
         {
-          printf("Closing API.\n");
-          boost::interprocess::shared_memory_object::remove("Airband");
-        }
-        else
-        {
-          printf("Leaving API.\n");
+          GOTOXY(0, 0);
+          printf("Receive: %d Parameter: %d\n", API_Command_Received.COMMAND, API_Command_Received.PARAMETER);
         }
 
-        // Original Exit Indicator.
-        do_exit = 1;
+        // Process Shutdown Command
+        if (API_Command_Received.COMMAND == -1)
+        {
+          GOTOXY(0, 17);
+          // Remove Shared Memory (if not active)
+          API_Channel.close(region_scan);
+          if (API_Channel.get_binds(region_scan) == 0)
+          {
+            printf("Closing API.\n");
+            boost::interprocess::shared_memory_object::remove("Airband");
+          }
+          else
+          {
+            printf("Leaving API.\n");
+          }
+
+          // Original Exit Indicator.
+          do_exit = 1;
+        }
+        else if (API_Command_Received.COMMAND == 1)
+        // Process Skip Command
+        {
+          Frequency_Control.set_skip(API_Command_Received.PARAMETER);
+        }
+        else if (API_Command_Received.COMMAND == 2)
+        // Process Hold Command
+        {
+          Frequency_Control.set_hold(API_Command_Received.PARAMETER);
+        }
+        else if (API_Command_Received.COMMAND == 3)
+        // Process Clear Hold and Skips Command
+        {
+          Frequency_Control.clear_holds_and_skips();
+        }
+
+        API_Command_Received.CHANGED = false;
       }
 
 

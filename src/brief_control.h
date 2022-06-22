@@ -41,6 +41,7 @@ class CONTROL
   public:
 
   int get_control(int Frequency)
+  // Returns Hold or Skip status of Frequency
   {
     unsigned int pos = 0;
     bool found = false;
@@ -49,6 +50,7 @@ class CONTROL
       // 0 - No Control
       // 1 - Skip
       // 2 - Hold
+      // 3 - Clear Holds and Skips
 
     if (CONTROL_HOLD_FREQUENCY.control == 2)
     {
@@ -87,6 +89,8 @@ class CONTROL
   }
 
   void clear(int Frequency)
+  // Clear Frequency Hold or Skip status.
+  // Not yet implementd.
   {
     unsigned int pos = 0;
     bool found = false;
@@ -113,6 +117,7 @@ class CONTROL
   }
 
   void set_skip(int Frequency)
+  // Add Frequency to Skip Frequency list.
   {
     unsigned int pos = 0;
     bool found = false;
@@ -132,14 +137,24 @@ class CONTROL
   }
 
   void set_hold(int Frequency)
+  // Set Frequeny Scanner to skip all frequencies in list, except Frequency
   {
     CONTROL_HOLD_FREQUENCY.frequency = Frequency;
     CONTROL_HOLD_FREQUENCY.control = 2;
   }
 
   int get_hold_frequency()
+  // Returns Held Frequency, regardless of it being held.
   {
     return CONTROL_HOLD_FREQUENCY.frequency;
+  }
+
+  void clear_holds_and_skips()
+  // Clears all Skipped frequencies and turuns off frequency hold.
+  {
+    CONTROL_HOLD_FREQUENCY.frequency = 0;
+    CONTROL_HOLD_FREQUENCY.control = 0;
+    CONTROL_FREQUENCYS.clear();
   }
 };
 
