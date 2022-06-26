@@ -1,3 +1,6 @@
+V 0.12A_220626
+  - API Clear Frequency command added.
+
 V 0.11A_220622
   - Made changes to API to put tighter control over the Command Send and Command 
       Receive channels.

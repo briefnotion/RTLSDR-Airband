@@ -822,6 +822,11 @@ void *demodulate(void *params) {
         {
           Frequency_Control.clear_holds_and_skips();
         }
+        else if (API_Command_Received.COMMAND == 4)
+        // Process Clear Hold and Skips Command
+        {
+          Frequency_Control.clear(API_Command_Received.PARAMETER);
+        }
 
         API_Command_Received.CHANGED = false;
       }
