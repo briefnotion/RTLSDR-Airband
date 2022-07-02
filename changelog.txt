@@ -1,3 +1,6 @@
+V 0.13A_220702
+  - Airband will echo back commands recieved for verification.
+
 V 0.12A_220626
   - API Clear Frequency command added.
 

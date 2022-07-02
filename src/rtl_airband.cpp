@@ -811,21 +811,33 @@ void *demodulate(void *params) {
         // Process Skip Command
         {
           Frequency_Control.set_skip(API_Command_Received.PARAMETER);
+          API_Command_To_Send.COMMAND = API_Command_Received.COMMAND;
+          API_Command_To_Send.PARAMETER = API_Command_Received.PARAMETER;
+          API_Command_To_Send.CHANGED = true;
         }
         else if (API_Command_Received.COMMAND == 2)
         // Process Hold Command
         {
           Frequency_Control.set_hold(API_Command_Received.PARAMETER);
+          API_Command_To_Send.COMMAND = API_Command_Received.COMMAND;
+          API_Command_To_Send.PARAMETER = API_Command_Received.PARAMETER;
+          API_Command_To_Send.CHANGED = true;
         }
         else if (API_Command_Received.COMMAND == 3)
         // Process Clear Hold and Skips Command
         {
           Frequency_Control.clear_holds_and_skips();
+          API_Command_To_Send.COMMAND = API_Command_Received.COMMAND;
+          API_Command_To_Send.PARAMETER = API_Command_Received.PARAMETER;
+          API_Command_To_Send.CHANGED = true;
         }
         else if (API_Command_Received.COMMAND == 4)
         // Process Clear Hold and Skips Command
         {
           Frequency_Control.clear(API_Command_Received.PARAMETER);
+          API_Command_To_Send.COMMAND = API_Command_Received.COMMAND;
+          API_Command_To_Send.PARAMETER = API_Command_Received.PARAMETER;
+          API_Command_To_Send.CHANGED = true;
         }
 
         API_Command_Received.CHANGED = false;
